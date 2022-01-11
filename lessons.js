@@ -18,26 +18,49 @@ diceEl.classList.add('hidden');
  
 let activePlayer = 0;
 const scores = [0,0]
-//Rolling dice logic
-btnRoll.addEventListener('click',function(){
-    const dice = Math.trunc(Math.random() * 6) + 1;
-    diceEl.classList.remove('hidden')
-    diceEl.src = 'dice' + dice + '.png'
 
-    if(dice !== 1){
-        currentScore += dice;
-        // document.querySelector('#current--0').textContent = currentScore;
-        document.getElementById(`current--${activePlayer}`).textContent = currentScore;
-
-    }else{
+let newGame = function(){
+    diceEl.classList.add('hidden')
+    currentScore = 0;
+    for (let i = 0; i < scores.length; i++) {
+        scores[i] = 0
+        document.getElementById(`score--${i}`).textContent = 0;
+        document.getElementById(`current--${i}`).textContent = 0;
+    }
+}
+let switchPlayer = function() {
         document.getElementById(`current--${activePlayer}`).textContent = 0;
         activePlayer = activePlayer === 0 ? 1 : 0;
         currentScore = 0;
         player0El.classList.toggle('player--active');
         player1El.classList.toggle('player--active');
+}
 
+//Rolling dice logic
+btnRoll.addEventListener('click',function(){
+    const diceNum = Math.trunc(Math.random() * 6) + 1;
+    diceEl.classList.remove('hidden')
+    diceEl.src = 'dice' + diceNum + '.png'
+
+    if(diceNum !== 1){
+        currentScore += diceNum;
+        // document.querySelector('#current--0').textContent = currentScore;
+        document.getElementById(`current--${activePlayer}`).textContent = currentScore;
+    }else{
+        switchPlayer();
     }
 })
+btnHold.addEventListener('click',function(){
+    scores[activePlayer] += currentScore;
+    document.getElementById(`score--${activePlayer}`).textContent = scores[activePlayer];
+    if (scores[activePlayer] > 100) {
+        alert(`Player ${++activePlayer} is winner!`)
+        newGame();
+    }
+    switchPlayer();
+})
+btnNew.addEventListener('click',newGame());
+
 
 ////ECMA script 5 realization
 ///
